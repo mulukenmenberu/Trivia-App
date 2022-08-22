@@ -1,5 +1,5 @@
 # Trivia API  - Backend Documentation
-## Environemnt Setum & Setting up the Backend
+## Environemnt Setup & Setting up the Backend
 ### Python Installation 
 If you Don't have installed Python yet, please go here and itstall it. 
 https://docs.python.org/3/using/unix html#getting-and-installing-the-latest-version-of-python)
@@ -99,6 +99,18 @@ flask run
                    }
 ### Endponints accessed by POST Method 
   1. /questions
+      - Saves new questions to the DB 
+      - Request Arguments: Search string 
+      - Returns JSON data like the following format 
+      ```json
+              {
+
+                "question": "question",
+                "answer":"answer",
+                "defficulty": "defficulty",
+                "category": "catagory"
+            
+          } 
   2. /questions/search
       - gets list of questions based on  search condition. list of questions that match partially or fully with the search condition will be returned. 
       - Request Arguments: Search string 
@@ -117,7 +129,7 @@ flask run
     - Deletes a question based on ID
           - Request Arguments: Question ID
           - Returns success message like the following format 
-          ```json
+      ```json
               {
             "message":"question deletedess"
               }
