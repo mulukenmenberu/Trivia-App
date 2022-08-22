@@ -20,27 +20,33 @@ def create_app(test_config=None):
         response.headers.add('Access-Control-Allow-Headers', 'GET, POST, DELETE')
         return response
 
-
+    # Endpoint to select questions based on pagination
     @app.route('/questions', methods=['GET'])
     def get_questions():
         page = request.args.get('page', 1, type=int)
         category_array = []
+        current_category_name = ""
         start = (page - 1) * 10
         end = start + 10
         questions = Question.query.all()
         category_list = Category.query.all()
         questions_count = Question.query.count()
 
+        # Get Current Category
+        currunt_cat_query = db.session.query(Question).order_by(Question.id.desc()).first()
+        current_cat_id = currunt_cat_query.category
         for x in category_list:
             category_array.append(x.type)
+            if current_cat_id == x.id:
+                current_category_name = x.type
         return jsonify({
                 "questions": format_questions(questions)[start:end],
                 "total_questions":questions_count,
                 "categories": category_array,
-                "current_category": "1"
+                "current_category": current_category_name
             
         })
-
+    #Endpoint to delete questions using question ID
     @app.route('/questions/<int:question_id>', methods=["DELETE"])
     def detele_question(question_id):
         Question.query.filter(Question.id == question_id).delete()
@@ -48,7 +54,7 @@ def create_app(test_config=None):
         return jsonify({
             "message":"question deletedess"
         })
-
+    #Endpoint to select categories 
     @app.route('/categories', methods=['GET'])
     def get_category_list():
         category_list = Category.query.all()
@@ -58,6 +64,8 @@ def create_app(test_config=None):
         return jsonify({
             "categories":category_array
         })
+    
+    #Endpoint to add a new question 
     @app.route('/questions', methods=['POST'])
     def add_new_question():
         client_data = request.get_json()
@@ -71,27 +79,33 @@ def create_app(test_config=None):
         return jsonify({
             "categories":"category_array"
         }) 
- 
+    #Endpoint to search a question 
     @app.route('/questions/search', methods=['POST'])
     def search_question():
         data = request.get_json()
         search_term =data['searchTerm']
         category_array = []
+        current_category_name = ""
         search_condition = '%{0}%'.format(search_term)
         search_question = Question.query.filter(Question.question.ilike(search_condition)).all()
         category_list = Category.query.all()
         questions_count = Question.query.filter(Question.question.ilike(search_condition)).count()
-
+        
+        #Get current category
+        currunt_cat_query = db.session.query(Question).order_by(Question.id.desc()).first()
+        current_cat_id = currunt_cat_query.category
         for x in category_list:
             category_array.append(x.type)
+            if x.id == current_cat_id:
+                current_category_name = x.type
         return jsonify({
                 "questions": format_questions(search_question),
                 "total_questions":questions_count,
                 "categories": category_array,
-                "current_category": "1"
+                "current_category": current_category_name
             
         })
-
+    #Endpoint for selecting questions based on categories 
     @app.route('/categories/<int:category_id>/questions', methods=['GET'])
     def get_question_by_category(category_id):
         category_array = []
@@ -108,7 +122,7 @@ def create_app(test_config=None):
             
         })
 
-    
+    #Endpoint for quiz - selecting one random question which is not in the previous question list 
     @app.route('/quizzes', methods=['POST'])
     def question_quiz():
         data = request.get_json()
@@ -122,6 +136,7 @@ def create_app(test_config=None):
         current_question = get_random_question(question_data, previous_questions)
         return current_question
  
+    #Error handler for 422 - when the request can't be processed
     @app.errorhandler(422)
     def unprocessable(error):
         return jsonify({
@@ -136,6 +151,7 @@ def create_app(test_config=None):
         "error": 404,
         "message": "The requested resource is not found in this server"
         }), 404
+    #Errorhandler for 404 - when the requested resource is not found in the server
     @app.errorhandler(405)
     def not_found(error):
      return jsonify({
@@ -143,6 +159,8 @@ def create_app(test_config=None):
         "error": 405,
         "message": "The requested Method is not allowed"
         }), 405
+
+    #Errorhandler for 400 - when bad input detected or when the input data is in wrong format
     @app.errorhandler(400)
     def not_found(error):
      return jsonify({
