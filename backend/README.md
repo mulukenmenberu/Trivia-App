@@ -1,104 +1,124 @@
-# Backend - Trivia API
+# Trivia API  - Backend Documentation
+## Environemnt Setum & Setting up the Backend
+### Python Installation 
+If you Don't have installed Python yet, please go here and itstall it. 
+https://docs.python.org/3/using/unix html#getting-and-installing-the-latest-version-of-python)
 
-## Setting up the Backend
-
-### Install Dependencies
-
-1. **Python 3.7** - Follow instructions to install the latest version of python for your platform in the [python docs](https://docs.python.org/3/using/unix.html#getting-and-installing-the-latest-version-of-python)
-
-2. **Virtual Environment** - We recommend working within a virtual environment whenever using Python for projects. This keeps your dependencies for each project separate and organized. Instructions for setting up a virual environment for your platform can be found in the [python docs](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
-
-3. **PIP Dependencies** - Once your virtual environment is setup and running, install the required dependencies by navigating to the `/backend` directory and running:
-
-```bash
-pip install -r requirements.txt
+### Creating Virtual Environemnt 
+  **Creating Virtual Environment on Linux** - 
+  ```bash
+python3 -m venv venv
 ```
+  **Activating Virtual Environment on Linux** - 
+  ```bash
+source venv/bin/activate
+```
+ **Creating Virtual Environment on Windows** - 
 
-#### Key Pip Dependencies
+### Installing Dependencies
+  all required packages are found in requirements.txt. so, after switching to your vertual ebvironemnt, run the following command to install all required packages 
 
-- [Flask](http://flask.pocoo.org/) is a lightweight backend microservices framework. Flask is required to handle requests and responses.
-
-- [SQLAlchemy](https://www.sqlalchemy.org/) is the Python SQL toolkit and ORM we'll use to handle the lightweight SQL database. You'll primarily work in `app.py`and can reference `models.py`.
-
-- [Flask-CORS](https://flask-cors.readthedocs.io/en/latest/#) is the extension we'll use to handle cross-origin requests from our frontend server.
+  ```bash
+  pip install -r requirements.txt
+  ```
 
 ### Set up the Database
-
-With Postgres running, create a `trivia` database:
+connect to your postgres database engine and run the following command to create the database.
 
 ```bash
 createbd trivia
 ```
-
-Populate the database using the `trivia.psql` file provided. From the `backend` folder in terminal run:
+### Importing demo data to the Database
+If you want to have a demo data in the newly created DB, you can run the following command. The demo DB file located under this directory. 
 
 ```bash
 psql trivia < trivia.psql
 ```
-
+### Exporting Environment Variables 
+In order to run this flask API, please run the following command to store your root app to environemnt variable 
+```bash
+export FLASK_APP=flaskr/
+```
 ### Run the Server
-
-From within the `./src` directory first ensure you are working using your created virtual environment.
 
 To run the server, execute:
 
 ```bash
-flask run --reload
+flask run
 ```
+### API Description 
 
-The `--reload` flag will detect file changes and restart the server automatically.
+### Endponints accessed by GET Method 
+  1.  /questions
+      - gets list of questions based on  pagination. List of questions under the specified page will be listed 
+      - Request Arguments: Page ID
+      - Returns JSON data like the following format 
+      ```json
+              {
 
-## To Do Tasks
+                "questions": "list of formatted question details",
+                "total_questions":"questions_count",
+                "categories": "category_array",
+                "current_category": "current_catagory"
+            
+          } 
+  2. /categories
+      - gets list of categories. 
+          - Request Arguments: None
+          - Returns JSON data like the following format 
+          ```json
+                  {
+                  "categories":{"1":"Science","2":"Geography"....}
+                  }
+  3. /categories/<int:category_id>/questions
+      - gets list of questions based on  catagory. list of questions that match witht he selected category will be returned. 
+          - Request Arguments: Category
+          - Returns JSON data like the following format 
+          ```json
+                  {
 
-These are the files you'd want to edit in the backend:
+                    "questions": "list of formatted question details",
+                    "total_questions":"questions_count",
+                    "categories": "category_array",
+                    "current_category": "current_catagory"
+                
+              } 
+  4. /quizzes
+        - retrives one question at a time based on some random function either in a selected category or from all categories. 
+          - Request Arguments: previous_questions, quiz_category
+                - se example below
+                ```json 
+                    {
+                      {"previous_questions": [], "quiz_category": {"type": "Geography", "id": "3"}}
+                    }
+          - Returns JSON data like the following format 
+          ```json
+                     {
+                    "question":{"id": "question_id", "question":"question text", "answer":"answer", "difficulty":"difficulty", "category":"category"
 
-1. `backend/flaskr/__init__.py`
-2. `backend/test_flaskr.py`
+                   }
+### Endponints accessed by POST Method 
+  1. /questions
+  2. /questions/search
+      - gets list of questions based on  search condition. list of questions that match partially or fully with the search condition will be returned. 
+      - Request Arguments: Search string 
+      - Returns JSON data like the following format 
+      ```json
+              {
 
-One note before you delve into your tasks: for each endpoint, you are expected to define the endpoint and response data. The frontend will be a plentiful resource because it is set up to expect certain endpoints and response data formats already. You should feel free to specify endpoints in your own way; if you do so, make sure to update the frontend or you will get some unexpected behavior.
+                "questions": "list of formatted question details",
+                "total_questions":"questions_count",
+                "categories": "category_array",
+                "current_category": "current_catagory"
+            
+          } 
+### Endponints accessed by DELETE Method 
+  1. /questions/<int:question_id>
+    - Deletes a question based on ID
+          - Request Arguments: Question ID
+          - Returns success message like the following format 
+          ```json
+              {
+            "message":"question deletedess"
+              }
 
-1. Use Flask-CORS to enable cross-domain requests and set response headers.
-2. Create an endpoint to handle `GET` requests for questions, including pagination (every 10 questions). This endpoint should return a list of questions, number of total questions, current category, categories.
-3. Create an endpoint to handle `GET` requests for all available categories.
-4. Create an endpoint to `DELETE` a question using a question `ID`.
-5. Create an endpoint to `POST` a new question, which will require the question and answer text, category, and difficulty score.
-6. Create a `POST` endpoint to get questions based on category.
-7. Create a `POST` endpoint to get questions based on a search term. It should return any questions for whom the search term is a substring of the question.
-8. Create a `POST` endpoint to get questions to play the quiz. This endpoint should take a category and previous question parameters and return a random questions within the given category, if provided, and that is not one of the previous questions.
-9. Create error handlers for all expected errors including 400, 404, 422, and 500.
-
-## Documenting your Endpoints
-
-You will need to provide detailed documentation of your API endpoints including the URL, request parameters, and the response body. Use the example below as a reference.
-
-### Documentation Example
-
-`GET '/api/v1.0/categories'`
-
-- Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
-- Request Arguments: None
-- Returns: An object with a single key, `categories`, that contains an object of `id: category_string` key: value pairs.
-
-```json
-{
-  "1": "Science",
-  "2": "Art",
-  "3": "Geography",
-  "4": "History",
-  "5": "Entertainment",
-  "6": "Sports"
-}
-```
-
-## Testing
-
-Write at least one test for the success and at least one error behavior of each endpoint using the unittest library.
-
-To deploy the tests, run
-
-```bash
-dropdb trivia_test
-createdb trivia_test
-psql trivia_test < trivia.psql
-python test_flaskr.py
-```
