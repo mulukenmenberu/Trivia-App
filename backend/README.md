@@ -126,9 +126,11 @@ flask run
           } 
 ### Endponints accessed by DELETE Method 
   1. /questions/<int:question_id>
-    - Deletes a question based on ID
-          - Request Arguments: Question ID
-          - Returns success message like the following format 
+
+      - Deletes a question based on ID
+      - Request Arguments: Question ID
+      - Returns success message like the following format 
+      
       ```json
               {
             "message":"question deletedess"
