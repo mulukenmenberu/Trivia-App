@@ -6,6 +6,7 @@ import random
 
 from models import setup_db, Question, Category, db
 from sqlalchemy.sql.expression import func
+from utils import get_random_question, format_questions
 QUESTIONS_PER_PAGE = 10
 
 def create_app(test_config=None):
@@ -18,17 +19,7 @@ def create_app(test_config=None):
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization')
         response.headers.add('Access-Control-Allow-Headers', 'GET, POST, DELETE')
         return response
-    def format_questions(question):
-        question_obj = []
-        for  x in question:
-            question_obj.append({
-                "id": x.id,
-                "question": x.question,
-                "answer": x.answer,
-                "difficulty": x.difficulty,
-                "category": x.category
-            })
-        return question_obj
+
 
     @app.route('/questions', methods=['GET'])
     def get_questions():
@@ -117,19 +108,7 @@ def create_app(test_config=None):
             
         })
 
-    def get_random_question(question_arr, viewd_questions):
-          
-          for  x in question_arr:
-                if x.id not in viewd_questions:
-                    id = x.id,
-                    question = x.question,
-                    answer = x.answer,
-                    difficulty = x.difficulty,
-                    category  = x.category
-                    break
-          
-          return jsonify({"question":{"id": str(id[0]), "question":question[0], "answer":answer[0], "difficulty":difficulty[0], "category":category}})
-
+    
     @app.route('/quizzes', methods=['POST'])
     def question_quiz():
         data = request.get_json()
