@@ -31,9 +31,40 @@ class TriviaTestCase(unittest.TestCase):
     def test_get_random_question(self):
         res = self.client().post('/quizzes', json={"previous_questions": [], "quiz_category": {"type": "Geography", "id": "3"}})
         data = json.loads(res.data)
-
         self.assertEqual(res.status_code, 200)
         self.assertTrue(data['question'])
+    def test_get_category_list(self):
+        res = self.client().post('/quizzes', json={"previous_questions": [], "quiz_category": {"type": "Geography", "id": "3"}})
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data['question'])
+    def test_get_questions(self):
+        res = self.client().post('/quizzes', json={"previous_questions": [], "quiz_category": {"type": "Geography", "id": "3"}})
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data['question'])
+    def test_delete_question(self):
+        res = self.client().post('/quizzes', json={"previous_questions": [], "quiz_category": {"type": "Geography", "id": "3"}})
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data['question'])
+    def test_add_new_question(self):
+        res = self.client().post('/quizzes', json={"previous_questions": [], "quiz_category": {"type": "Geography", "id": "3"}})
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data['question'])
+    def test_search_questions(self):
+        res = self.client().post('/quizzes', json={"previous_questions": [], "quiz_category": {"type": "Geography", "id": "3"}})
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data['question'])
+
+    def test_get_question_by_category(self):
+        res = self.client().post('/quizzes', json={"previous_questions": [], "quiz_category": {"type": "Geography", "id": "3"}})
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data['question'])
+
 # Make the tests conveniently executable
 if __name__ == "__main__":
     unittest.main()

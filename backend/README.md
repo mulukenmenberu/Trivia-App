@@ -38,6 +38,11 @@ psql trivia < trivia.psql
 In order to run this flask API, please run the following command to store your root app to environemnt variable 
 ```bash
 export FLASK_APP=flaskr/
+
+export DB_HOST=localhost:5432
+export DB_USER=postgres
+export DB_PASSWORD=123456
+export DB_NAME=trivia
 ```
 ### Run the Server
 

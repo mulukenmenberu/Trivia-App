@@ -24,7 +24,7 @@ def create_app(test_config=None):
     @app.route('/questions', methods=['GET'])
     def get_questions():
         page = request.args.get('page', 1, type=int)
-        category_array = []
+        category_array = {}
         current_category_name = ""
         start = (page - 1) * 10
         end = start + 10
@@ -36,7 +36,7 @@ def create_app(test_config=None):
         currunt_cat_query = db.session.query(Question).order_by(Question.id.desc()).first()
         current_cat_id = currunt_cat_query.category
         for x in category_list:
-            category_array.append(x.type)
+            category_array[x.id] =x.type
             if current_cat_id == x.id:
                 current_category_name = x.type
         return jsonify({
@@ -108,6 +108,7 @@ def create_app(test_config=None):
     #Endpoint for selecting questions based on categories 
     @app.route('/categories/<int:category_id>/questions', methods=['GET'])
     def get_question_by_category(category_id):
+
         category_array = []
         questions = Question.query.filter(Question.category == category_id).all()
         questions_count = Question.query.filter(Question.category == category_id).count()
@@ -133,7 +134,9 @@ def create_app(test_config=None):
         else:
             question_data = Question.query.filter(Question.category == quiz_category).order_by(func.random()).all()
         question = Question.query.get(10)
-        current_question = get_random_question(question_data, previous_questions)
+        questions_count = Question.query.filter(Question.category == quiz_category).count()
+        current_question = get_random_question(question_data, previous_questions, questions_count)
+        
         return current_question
  
     #Error handler for 422 - when the request can't be processed
