@@ -53,7 +53,7 @@ def create_app(test_config=None):
             'total_questions': questions_count,
             'categories': category_array,
             'current_category': current_category_name,
-            })
+        })
 
     # Endpoint to delete questions using question ID
 
@@ -61,7 +61,7 @@ def create_app(test_config=None):
     def detele_question(question_id):
         Question.query.filter(Question.id == question_id).delete()
         db.session.commit()
-        return jsonify({'success': True, "message":"question deleted"})
+        return jsonify({'success': True, "message": "question deleted"})
 
     # Endpoint to select categories
 
@@ -87,7 +87,7 @@ def create_app(test_config=None):
                                  category=category)
         db.session.add(question_data)
         db.session.commit()
-        return jsonify({'success':True, 'message': 'question recorded'})
+        return jsonify({'success': True, 'message': 'question recorded'})
 
     # Endpoint to search a question
 
@@ -98,11 +98,11 @@ def create_app(test_config=None):
         category_array = []
         current_category_name = ''
         search_condition = '%{0}%'.format(search_term)
-        search_question = \
-            Question.query.filter(Question.question.ilike(search_condition)).all()
+        search_question = Question.query.filter(
+            Question.question.ilike(search_condition)).all()
         category_list = Category.query.all()
-        questions_count = \
-            Question.query.filter(Question.question.ilike(search_condition)).count()
+        questions_count = Question.query.filter(
+            Question.question.ilike(search_condition)).count()
 
         # Get current category
 
@@ -118,19 +118,19 @@ def create_app(test_config=None):
             'total_questions': questions_count,
             'categories': category_array,
             'current_category': current_category_name,
-            })
+        })
 
     # Endpoint for selecting questions based on categories
 
     @app.route('/categories/<int:category_id>/questions', methods=['GET'
-               ])
+                                                                   ])
     def get_question_by_category(category_id):
 
         category_array = []
         questions = Question.query.filter(Question.category
-                == category_id).all()
+                                          == category_id).all()
         questions_count = Question.query.filter(Question.category
-                == category_id).count()
+                                                == category_id).count()
         category_list = Category.query.all()
         for x in category_list:
             category_array.append(x.type)
@@ -139,9 +139,10 @@ def create_app(test_config=None):
             'total_questions': questions_count,
             'categories': category_array,
             'current_category': category_id,
-            })
+        })
 
-    # Endpoint for quiz - selecting one random question which is not in the previous question list
+    # Endpoint for quiz - selecting one random question which is not in the
+    # previous question list
 
     @app.route('/quizzes', methods=['POST'])
     def question_quiz():
@@ -151,13 +152,14 @@ def create_app(test_config=None):
         if quiz_category == 0:
             question_data = Question.query.order_by(func.random()).all()
         else:
-            question_data = Question.query.filter(Question.category
-                    == quiz_category).order_by(func.random()).all()
+            question_data = Question.query.filter(
+                Question.category == quiz_category).order_by(
+                func.random()).all()
         question = Question.query.get(10)
         questions_count = Question.query.filter(Question.category
-                == quiz_category).count()
-        current_question = get_random_question(question_data,
-                previous_questions, questions_count)
+                                                == quiz_category).count()
+        current_question = get_random_question(
+            question_data, previous_questions, questions_count)
 
         return current_question
 
@@ -172,16 +174,18 @@ def create_app(test_config=None):
     def not_found(error):
         return (jsonify({'success': False, 'error': 404,
                 'message': 'The requested resource is not found in this server'
-                }), 404)
+                         }), 404)
 
-    # Errorhandler for 404 - when the requested resource is not found in the server
+    # Errorhandler for 404 - when the requested resource is not found in the
+    # server
 
     @app.errorhandler(405)
     def not_found(error):
         return (jsonify({'success': False, 'error': 405,
                 'message': 'The requested Method is not allowed'}), 405)
 
-    # Errorhandler for 400 - when bad input detected or when the input data is in wrong format
+    # Errorhandler for 400 - when bad input detected or when the input data is
+    # in wrong format
 
     @app.errorhandler(400)
     def not_found(error):

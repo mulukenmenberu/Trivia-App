@@ -17,8 +17,7 @@ class TriviaTestCase(unittest.TestCase):
         self.client = self.app.test_client
         self.database_name = 'trivia'
         self.database_path = \
-            'postgresql://postgres:123456@{}/{}'.format('localhost:5432'
-                , self.database_name)
+            'postgresql://postgres:123456@{}/{}'.format('localhost:5432', self.database_name)
         setup_db(self.app, self.database_path)
 
         # binds the app to the current context
@@ -39,8 +38,8 @@ class TriviaTestCase(unittest.TestCase):
     def test_get_random_question(self):
         res = self.client().post('/quizzes',
                                  json={'previous_questions': [],
-                                 'quiz_category': {'type': 'Geography',
-                                 'id': '3'}})
+                                       'quiz_category': {'type': 'Geography',
+                                                         'id': '3'}})
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 200)
         self.assertTrue(data['question'])
@@ -65,9 +64,13 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], "question deleted")
 
     def test_add_new_question(self):
-        res = self.client().post('/questions',
-                                 json={'question': "test",
-                                 'answer': "test","difficulty":2,"category":1})
+        res = self.client().post(
+            '/questions',
+            json={
+                'question': "test",
+                'answer': "test",
+                "difficulty": 2,
+                "category": 1})
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 200)
         self.assertTrue(data['success'], True)
@@ -78,7 +81,7 @@ class TriviaTestCase(unittest.TestCase):
                                  json={'searchTerm': "searchTerm"})
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 200)
-        self.assertTrue(len(data),4)
+        self.assertTrue(len(data), 4)
 
     def test_get_question_by_category(self):
         res = self.client().get('/categories/10/questions')
@@ -87,6 +90,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(len(data), 4)
 
 # Make the tests conveniently executable
+
 
 if __name__ == '__main__':
     unittest.main()
